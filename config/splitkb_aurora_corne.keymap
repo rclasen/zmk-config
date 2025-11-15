@@ -9,8 +9,12 @@
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
 
+// TODO: tap-hold shift-insert
 // TODO: make mouse work
-// TODO: sticky-layer is misbehaving
+// TODO: slh / sticky-layer is misbehaving
+
+#define TAPPING_TERM <200>
+#define TAPPING_TERM_SLOW <250>
 
 #define SYM 1
 #define NAV 2
@@ -25,8 +29,8 @@
 			compatible = "zmk,behavior-hold-tap";
 			#binding-cells = <2>;
 			flavor = "tap-preferred";
-			tapping-term-ms = <220>;
-			quick-tap-ms = <170>;
+			tapping-term-ms = TAPPING_TERM;
+			quick-tap-ms = TAPPING_TERM;
 			//require-prior-idle-ms = <100>
 			bindings = <&kp>, <&kp>;
 		};
@@ -35,8 +39,8 @@
 			compatible = "zmk,behavior-hold-tap";
 			#binding-cells = <2>;
 			flavor = "tap-preferred";
-			tapping-term-ms = <250>;
-			quick-tap-ms = <200>;
+			tapping-term-ms = TAPPING_TERM_SLOW;
+			quick-tap-ms = TAPPING_TERM_SLOW;
 			//require-prior-idle-ms = <100>
 			bindings = <&kp>, <&kp>;
 		};
@@ -57,7 +61,7 @@
 			compatible = "zmk,behavior-hold-tap";
 			#binding-cells = <2>;
 			flavor = "hold-preferred";
-			tapping-term-ms = <180>;
+			tapping-term-ms = TAPPING_TERM;
 			hold-while-undecided;
 			bindings = <&mo>, <&tog_on>;
 		};
@@ -66,7 +70,7 @@
 			compatible = "zmk,behavior-hold-tap";
 			#binding-cells = <2>;
 			flavor = "hold-preferred";
-			tapping-term-ms = <220>;
+			tapping-term-ms = TAPPING_TERM;
 			hold-while-undecided;
 			bindings = <&mo>, <&sl>;
 		};
@@ -74,7 +78,7 @@
 		td_sym: tap_dance_sym {
 			compatible = "zmk,behavior-tap-dance";
 			#binding-cells = <0>;
-			tapping-term-ms = <200>;
+			tapping-term-ms = TAPPING_TERM;
 			bindings =
 				//<&slh SYM SYM>, // TODO
 				<&mo SYM>,
@@ -85,7 +89,7 @@
 		td_nav: tap_dance_nav {
 			compatible = "zmk,behavior-tap-dance";
 			#binding-cells = <0>;
-			tapping-term-ms = <200>;
+			tapping-term-ms = TAPPING_TERM;
 			bindings =
 				//<&slh NAV NAV>, // TODO
 				<&mo NAV>,
@@ -96,7 +100,7 @@
 		td_mos: tap_dance_mos {
 			compatible = "zmk,behavior-tap-dance";
 			#binding-cells = <0>;
-			tapping-term-ms = <200>;
+			tapping-term-ms = TAPPING_TERM;
 			bindings =
 				//<&slh MOS MOS>, // TODO
 				<&mo MOS>,
@@ -119,11 +123,10 @@
 		s_ins: shift_insert { // unused
 			compatible = "zmk,behavior-macro";
 			#binding-cells = <0>;
-			bindings
-			= <&macro_press &kp LSHFT>
-			, <&macro_tap &kp INS>
-			, <&macro_release &kp LSHFT>
-			;
+			bindings =
+				<&macro_press &kp LSHFT>,
+				<&macro_tap &kp INS>,
+				<&macro_release &kp LSHFT>;
 		};
 
 	};
@@ -139,10 +142,10 @@
 // |      |  Z  |  X  |  C  |  V  |  B  |      |  N  |  M   |  ,  |  .  |  RET  |       |
 //                       | MOS |shift| NAV | |BSPC | SPACE| SYM |
                         bindings = <
-   &sh GHK GHK &kp Q        &kp W        &kp E       &kp R           &kp T       &kp Y    &kp U       &kp I        &kp O       &kp P          &kp PSCRN
-   &kp TAB     &mtp LGUI A  &mth LCTRL S &mth LALT D &mth LSHFT F    &kp G       &kp H    &mth RSFT J &mth LALT K  &mth RCTL L &mth LGUI RALT &none
-   &mo KEB     &kp Z        &kp X        &kp C       &kp V           &kp B       &kp N    &kp M       &kp COMMA    &kp DOT     &kp RET        &sk LSHFT
-                                           &td_mos     &sh LSHFT LSHFT &td_nav &kp BSPC &kp SPACE   &td_sym
+   &sh GHK GHK      &kp Q        &kp W        &kp E       &kp R           &kp T       &kp Y    &kp U       &kp I        &kp O       &kp P          &kp PSCRN
+   &mth LS(TAB) TAB &mtp LGUI A  &mth LCTRL S &mth LALT D &mth LSHFT F    &kp G       &kp H    &mth RSFT J &mth LALT K  &mth RCTL L &mth LGUI RALT &none
+   &mo KEB          &kp Z        &kp X        &kp C       &kp V           &kp B       &kp N    &kp M       &kp COMMA    &kp DOT     &kp RET        &sk LSHFT
+                                                &td_mos     &sh LSHFT LSHFT &td_nav &kp BSPC &kp SPACE   &td_sym
                         >;
                 };
 
@@ -169,10 +172,10 @@
 // |      | Esc | sIns| ins | ENT  | spac|       |  :  |  1  |  2  |  3  | ENT |      |
 //                      |     |     |     |   |     |     |  0  |
                         bindings = <
-   &trans &kp PG_UP &kp BSPC    &kp UP   &kp DEL   &kp PG_DN   &kp MINUS &kp N7   &kp N8   &kp N9   &kp PLUS  &trans
-   &trans &kp HOME  &kp LEFT    &kp DOWN &kp RIGHT &kp END     &kp DOT   &kp N4   &kp N5   &kp N6   &kp COMMA &trans
-   &trans &kp ESC   &kp LS(INS) &kp INS  &kp RET   &kp SPACE   &kp COLON &kp N1   &kp N2   &kp N3   &kp RET   &trans
-                                  &trans   &trans    &trans  &trans    &trans   &kp N0
+   &trans &kp PG_UP &kp BSPC    &kp UP           &kp DEL   &kp PG_DN   &kp MINUS &kp N7       &kp N8       &kp N9       &kp PLUS        &trans
+   &trans &kp HOME  &kp LEFT    &kp DOWN         &kp RIGHT &kp END     &kp DOT   &mth RSFT N4 &mth LALT N5 &mth RCTL N6 &mth LGUI COMMA &trans
+   &trans &kp ESC   &kp LS(INS) &mth LS(INS) INS &kp RET   &kp SPACE   &kp COLON &kp N1       &kp N2       &kp N3       &kp RET         &trans
+                                  &trans           &trans    &trans  &trans    &trans       &kp N0
                         >;
                 };
 
